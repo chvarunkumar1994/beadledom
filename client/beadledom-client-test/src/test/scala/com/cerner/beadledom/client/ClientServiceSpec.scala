@@ -1,13 +1,9 @@
 package com.cerner.beadledom.client
 
 import com.cerner.beadledom.client.example.client._
-<<<<<<< HEAD
-import com.cerner.beadledom.client.example.model.{JsonOne, JsonTwo}
-=======
 import com.cerner.beadledom.client.example.model.{JsonOne, JsonOneOffsetPaginatedListDto, JsonTwo}
-import com.cerner.beadledom.client.example.{PaginatedClientResource, ResourceOne, ResourceTwo}
+import com.cerner.beadledom.client.example.PaginatedClientResource
 import com.cerner.beadledom.jaxrs.GenericResponse
->>>>>>> master
 import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
 import com.google.inject._
 import org.scalatest.{BeforeAndAfter, DoNotDiscover, FunSpec, MustMatchers}
@@ -73,7 +69,7 @@ class ClientServiceSpec(contextRoot: String, servicePort: Int)
 
     describe("Pagination") {
       it("injects pagination links to the response") {
-        val injector = getInjector(List(new ResourceOneModule))
+        val injector = getInjector(List(new ExampleOneClientModule))
 
         val paginatedResource = injector.getInstance(classOf[PaginatedClientResource])
 
@@ -89,7 +85,7 @@ class ClientServiceSpec(contextRoot: String, servicePort: Int)
       }
 
       it("injects previous link when beyond the first page") {
-        val injector = getInjector(List(new ResourceOneModule))
+        val injector = getInjector(List(new ExampleOneClientModule))
 
         val paginatedResource = injector.getInstance(classOf[PaginatedClientResource])
 
@@ -105,7 +101,7 @@ class ClientServiceSpec(contextRoot: String, servicePort: Int)
       }
 
       it("rejects 0 limit by default") {
-        val injector = getInjector(List(new ResourceOneModule))
+        val injector = getInjector(List(new ExampleOneClientModule))
 
         val paginatedResource = injector.getInstance(classOf[PaginatedClientResource])
 
@@ -116,7 +112,7 @@ class ClientServiceSpec(contextRoot: String, servicePort: Int)
       }
 
       it("rejects negative offset") {
-        val injector = getInjector(List(new ResourceOneModule))
+        val injector = getInjector(List(new ExampleOneClientModule))
 
         val paginatedResource = injector.getInstance(classOf[PaginatedClientResource])
 
@@ -127,7 +123,7 @@ class ClientServiceSpec(contextRoot: String, servicePort: Int)
       }
 
       it("rejects negative limits") {
-        val injector = getInjector(List(new ResourceOneModule))
+        val injector = getInjector(List(new ExampleOneClientModule))
 
         val paginatedResource = injector.getInstance(classOf[PaginatedClientResource])
 
@@ -138,7 +134,7 @@ class ClientServiceSpec(contextRoot: String, servicePort: Int)
       }
 
       it("rejects limits over the max") {
-        val injector = getInjector(List(new ResourceOneModule))
+        val injector = getInjector(List(new ExampleOneClientModule))
 
         val paginatedResource = injector.getInstance(classOf[PaginatedClientResource])
 

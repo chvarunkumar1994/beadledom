@@ -5,7 +5,6 @@ import com.cerner.beadledom.client.BeadledomClientConfiguration;
 import com.cerner.beadledom.client.BeadledomClientModule;
 import com.cerner.beadledom.client.BeadledomWebTarget;
 import com.cerner.beadledom.client.example.PaginatedClientResource;
-import com.cerner.beadledom.client.example.ResourceOne;
 import com.cerner.beadledom.client.jackson.ObjectMapperClientFeatureModule;
 
 import com.google.inject.AbstractModule;
