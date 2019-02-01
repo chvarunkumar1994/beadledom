@@ -2,10 +2,10 @@
 
 .. Defined for inline java code highlighting
 .. role:: java(code)
-   :language: java
+  :language: java
 
 .. toctree::
-   :name: getting_started_toc
+  :name: getting_started_toc
    :includehidden:
 
 Getting Started
@@ -94,18 +94,12 @@ After a successful project creation we can go ahead and build our project and st
   awesome-thing> cd service
   awesome-thing/service> mvn tomcat7:run-war
 
-Once the service has started we can navigate to our swagger resource to explore the rest of the
-default ``api``.
+Once the service has started we can navigate to our swagger resource to retrieve the swagger
+specification of the default ``api``.
 
 .. code-block:: html
 
-  http://localhost:8080/awesome-thing-service/meta/swagger/ui
-
-Go ahead and play around with the ``healthcheck`` and ``hello`` resources for a while. Once you
-get tired of that move onto the next section where we will breakdown the components.
-
-Stagemonitor web widget is disabled by default, to enable it set ``stagemonitor.web.widget.enabled`` to ``true`` in
-``service/src/main/resources/stagemonitor.properties``.
+  http://localhost:8080/awesome-thing-service/api-docs
 
 The Breakdown
 -------------
@@ -116,8 +110,82 @@ of these and talk about the classes they contain.
 API sub-module
 ~~~~~~~~~~~~~~
 
-This module contains model classes defining your JSON ``responses``. The code living here ends up
-being used by both the ``client`` and the ``service``.
+This module contains the the models defining your ``requests`` and ``responses``. The code living
+here ends up being used by both the ``client`` and the ``service``.
+
+HelloWorldResource
+++++++++++++++++++
+
+.. code-block:: java
+
+  @Api(value = "/hello", description = "Retrieve hello world data")
+  @Path("/hello")
+  public interface HelloWorldResource {
+
+    @ApiOperation(
+        value = "Retrieves hello world data.",
+        response = HelloWorldDto.class)
+    @ApiResponse(code = 200, message = "Success")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public GenericResponse<HelloWorldDto> getHelloWorld();
+  }
+
+This is the definition for the ``/hello`` resource (and by resource we are talking about an api
+resource). There is a lot going on here so we will add some comments to explain what each of these
+lines are doing.
+
+.. code-block:: java
+
+  /**
+   * Swagger annotation defining the base resource for the generated swagger documentation.
+   */
+  @Api(value = "/hello", description = "Retrieve hello world data")
+
+  /**
+   * JAX-RS annotation defining the base URI path for the resource.
+   */
+  @Path("/hello")
+  public interface HelloWorldResource {
+
+  /**
+   * Swagger annotation defining the documentation for the HTTP verb this method provides. It
+   * also includes the Dto class that is used for the response.
+   */
+    @ApiOperation(
+        value = "Retrieves hello world data.",
+        response = HelloWorldDto.class)
+
+    /**
+     * Swagger annotation for the different status codes our resource can
+     * return (500 is often omitted).
+     */
+    @ApiResponse(code = 200, message = "Success")
+
+    /**
+     * JAX-RS annotation for the HTTP verb this method is providing functionality for.
+     */
+    @GET
+
+    /**
+     * JAX-RS annotation for the media type our service returns.
+     */
+    @Produces(MediaType.APPLICATION_JSON)
+
+    /**
+     * Method definition for the resource. The GenericResponse is an implementation provided
+     * by Beadledom. It allows consumers (mostly of the client) to get a type safe response
+     * from the server instead of having to do the casting or deserialization of the Json
+     * payload themselves.
+     */
+    public GenericResponse<HelloWorldDto> getHelloWorld();
+  }
+
+And that's pretty much all that is needed to define an end-point. To learn more about how to
+extend your path and about additional annotations that can be used in defining a resource we
+suggest taking a look at `RESTEasy's documentation <http://resteasy.jboss.org/docs.html>`_ to
+get started (RESTEasy is the current implementation of the JAX-RS standard that Beadledom is using).
+>>>>>>> master
 
 HelloWorldDto
 +++++++++++++
@@ -194,7 +262,7 @@ AwesomeThingContextListener
 +++++++++++++++++++++++++++
 
 .. Note:: Your class names might be slightly different depending on what you choose for your
-``Project Name``.
+  ``Project Name``.
 
 .. code-block:: java
 
@@ -224,6 +292,7 @@ ResteasyBootstrapModule
 
     protected void configure() {
       install(new ResteasyModule());
+      install(new Swagger2Module());
 
       BuildInfo buildInfo = BuildInfo.load(getClass().getResourceAsStream("build-info.properties"));
       bind(BuildInfo.class).toInstance(buildInfo);
@@ -231,11 +300,11 @@ ResteasyBootstrapModule
     }
 
     @Provides
-    SwaggerConfig provideSwaggerConfig(ServiceMetadata serviceMetadata) {
-      SwaggerConfig config = new SwaggerConfig();
-      config.setApiVersion(serviceMetadata.getBuildInfo().getVersion());
-      config.setSwaggerVersion(SwaggerSpec.version());
-      return config;
+    @Singleton
+    Info provideSwagger2Info(ServiceMetadata serviceMetadata) {
+     return new Info()
+        .title("Your Service Name")
+        .version(serviceMetadata.getBuildInfo().getVersion());
     }
   }
 
@@ -246,7 +315,7 @@ in order to make our service tick. Below are some of the many awesome features t
 - `Configuration <https://github.com/cerner/beadledom/tree/master/configuration#beadledom-configuration>`_ - lets us access all the configuration through a consistent API.
 - `Health <https://github.com/cerner/beadledom/tree/master/health#beadledom-health>`_ - Health checks for the services
 - `Jackson <https://github.com/cerner/beadledom/tree/master/jackson#beadledom-jackson>`_ - Serialization-DeSerialization for the payload
-- `Swagger <https://github.com/cerner/beadledom/tree/master/swagger#beadledom-swagger>`_ - Enables the `Open API <https://openapis.org/specification>`_ documentation and `Swagger UI <http://swagger.io/swagger-ui/>`_
+- `Swagger <https://github.com/cerner/beadledom/tree/master/swagger2#beadledom-swagger2>`_ - Enables the `Open API <https://openapis.org/specification>`_ documentation and `Swagger UI <http://swagger.io/swagger-ui/>`_
 
 The next chunk of code
 

@@ -1,13 +1,74 @@
 # Beadledom Changelog
 
-## 3.0 - In Development
+## 3.2.4 - In development
+
+### Defects Corrected
+* Jackson version uplift from 2.9.6 -> 2.9.8 because of vulnerabilities: 
+  - CVE-2018-19360
+  - CVE-2018-19362
+  - CVE-2018-14720
+  - CVE-2018-19361
+  - CVE-2018-14719
+  - CVE-2018-14718
+  - CVE-2018-14721
+
+## 3.2.3 - 4 December 2018
+
+### Defects Corrected
+* [internal] Use the `-q` option on `mvn site` to enable quiet running of the command (only printing errors) in an effort to reduce log length in Travis.
+
+## 3.2.2 - 4 December 2018
+
+### Defects Corrected
+* [internal] Use the `-B` option on our `mvn site` command to reduce log length by eliminating progress dialogs from downloads. [More Info](https://stackoverflow.com/questions/21638697/disable-maven-download-progress-indication) 
+
+## 3.2.1 - 3 December 2018
+
+### Defects Corrected
+* [internal] Upgrade to spotbug 3.1.8 to eliminate incorrect identification of bugs that was causing Travis to fail. [More Info](https://github.com/spotbugs/spotbugs/pull/688)
+
+## 3.2 - 30 November 2018
+
+### Additions
+* Add OffsetPaginatedListDto interface to the pagination module.
+* Add configuration to allow 0 as a pagination limit value (disabled by default - limit=1 as minimum value).
+* Add Swagger 2 module.
+
+### Defects Corrected
+* Fix isHealthy field being included in the health dependency list JSON.
+* Health resource (/health) now excludes non-primary health dependencies. The non-primary dependencies are still included in the diagnostic resource (/health/diagnostic). The default for health dependencies is also changed to be primary.
+
+## 3.1 - 12 September 2018
+
+### Additions
+* Add offset based pagination with beadledom-pagination.
+
+### Defects Corrected
+* Fixed beadledom client deserialization to GenericResponse when the JAX-RS response has no entity.
+
+## 3.0 - 3 August 2018
 
 ### Breaking Changes
-
 * Remove StagemonitorModule, SwaggerModule, AvroJacksonGuiceModule, AvroSwaggerGuiceModule, and 
 HealthModule modules from being installed by BeadledomModule. If the removed functionality is 
 desired, install the removed modules in the consuming guice module.
 * Bump minimum Java version to 1.8 for all modules.
+* Upgrade to JAX-RS 2.1 with Resteasy 3.6.x
+* Change the HttpClient `ServiceUnavailableRetryStrategy` to only retry on 503 response codes.
+* The beadledom-swagger module was renamed to beadledom-swagger1 in preparation for support of 
+swagger 2 and OpenAPI 3.
+
+### Enhancements
+* Support building with JDK 9/10+
+* Add [migration guide](http://engineering.cerner.com/beadledom/3.0/docs/releases/Beadledom30.html) to documentation site.
+
+### Defects Corrected
+* Fixed health DTOs Jackson deserialization.
+
+## 2.8 - 16 May 2018
+
+### Additions
+* Add [New Relic](https://newrelic.com/) module.
 
 ## 2.7.2 - 11 April 2018
 

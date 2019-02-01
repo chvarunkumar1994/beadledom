@@ -3,7 +3,11 @@ package com.cerner.beadledom.client.example.client;
 import com.cerner.beadledom.client.BeadledomClient;
 import com.cerner.beadledom.client.BeadledomClientConfiguration;
 import com.cerner.beadledom.client.BeadledomClientModule;
+import com.cerner.beadledom.client.BeadledomWebTarget;
+import com.cerner.beadledom.client.example.PaginatedClientResource;
+import com.cerner.beadledom.client.example.ResourceOne;
 import com.cerner.beadledom.client.jackson.ObjectMapperClientFeatureModule;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -35,6 +39,14 @@ public class ExampleOneClientModule extends AbstractModule {
   ExampleOneClient provideExampleOneClient(
       @ResourceOneFeature BeadledomClient client, ExampleClientConfig config) {
     return new ExampleOneClient(client, config);
+  }
+
+  @Provides
+  @Singleton
+  PaginatedClientResource providePaginatedResource(
+      @ResourceOneFeature BeadledomClient client, ExampleClientConfig config) {
+    BeadledomWebTarget target = client.target(config.uri());
+    return target.proxy(PaginatedClientResource.class);
   }
 
   // Overriding the default BeadledomClientConfiguration

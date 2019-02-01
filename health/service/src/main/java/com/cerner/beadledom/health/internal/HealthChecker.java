@@ -15,6 +15,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -31,6 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 public class HealthChecker {
   private static final Logger LOGGER = LoggerFactory.getLogger(HealthChecker.class);
+  private static final Range<Integer> HEALTHY_STATUS_RANGE = Range.closed(200, 299);
 
   private final UriInfo uriInfo;
   private final ServiceMetadata serviceMetadata;
@@ -55,8 +57,10 @@ public class HealthChecker {
    * Other metadata fields on the HealthDto will also be populated.
    */
   public HealthDto doPrimaryHealthCheck() {
-    // TODO - allow some dependencies to be marked as 'secondary', and skip those here
-    return checkHealth(healthDependencies.values());
+    List<HealthDependency> primaryHealthDependencies = healthDependencies.values().stream()
+        .filter(HealthDependency::isPrimary)
+        .collect(Collectors.toList());
+    return checkHealth(primaryHealthDependencies);
   }
 
   /**
@@ -124,21 +128,12 @@ public class HealthChecker {
 
     try {
       HealthStatus status = dependency.checkAvailability();
-      String message = status.getMessage();
-      builder.setMessage(message);
-      if (status.getException().isPresent()) {
-        LOGGER.error(
-            "Health dependency {} returned an exception", dependency.getName(),
-            status.getException());
-        String stacktrace = Throwables.getStackTraceAsString(status.getException().get());
-        builder.setMessage(new StringBuilder().append(message)
-            .append(' ')
-            .append(stacktrace).toString());
-      }
-      builder.setHealthy(true);
-      if (!Range.closed(200, 299).contains(status.getStatus())) {
-        builder.setHealthy(false);
-      }
+
+      status.getException().ifPresent(
+          e -> LOGGER.error("Health dependency {} returned an exception", dependency.getName(), e));
+
+      builder.setMessage(messageFromStatus(status));
+      builder.setHealthy(isHealthy(status));
     } catch (Exception e) {
       LOGGER.error("Health dependency {} threw  an exception", dependency.getName(), e);
       builder.setHealthy(false)
@@ -148,9 +143,21 @@ public class HealthChecker {
     return builder.build();
   }
 
+  private String messageFromStatus(HealthStatus status) {
+    String message = status.getMessage();
+
+    return status.getException()
+        .map(e -> message + ' ' + Throwables.getStackTraceAsString(e))
+        .orElse(message);
+  }
+
+  private boolean isHealthy(HealthStatus status) {
+    return HEALTHY_STATUS_RANGE.contains(status.getStatus());
+  }
+
   private HealthDependencyDto.Builder dependencyDtoBuilder(HealthDependency dependency) {
     HealthDependencyDto.Builder dto = HealthDependencyDto.builder()
-        .setPrimary(dependency.getPrimary())
+        .setPrimary(dependency.isPrimary())
         .setId(dependency.getName())
         .setLinks(LinksDto.builder()
             .setSelf(
@@ -161,9 +168,7 @@ public class HealthChecker {
                     .toString())
             .build());
 
-    if (dependency.getDescription().isPresent()) {
-      dto.setName(dependency.getDescription().get());
-    }
+    dependency.getDescription().ifPresent(dto::setName);
     return dto;
   }
 }

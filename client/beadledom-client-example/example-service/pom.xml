@@ -5,7 +5,7 @@
   <parent>
     <artifactId>beadledom-client-example</artifactId>
     <groupId>com.cerner.beadledom</groupId>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.3-SNAPSHOT</version>
   </parent>
 
   <artifactId>beadledom-client-example-service</artifactId>
@@ -19,6 +19,11 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.cerner.beadledom</groupId>
+      <artifactId>beadledom-resteasy-genericresponse</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>

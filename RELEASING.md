@@ -11,7 +11,13 @@ Note: Releasing the project requires an initial set up. The [Preparing for the R
 
 ## Preparing for the Release
 
+### Sonatype setup
+
 * A valid Sonatype user account is required to release this project. To create an account sign up with [Sonatype](https://issues.sonatype.org/secure/Signup!default.jspa).
+* Once you have the Sonatype user account, you need to comment on this [JIRA](https://issues.sonatype.org/browse/OSSRH-27635) to get yourself added to the Beadledom project group.
+
+### One Time Shared Travis setup
+* These steps need to be performed only if we were to revoke secrets that is in use by travis and create a new one. Also, since this is a shared setup, only one of the maintainers need to do it once. 
 * Execute the following commands in your terminal to prepare travis-ci
 
     ```
@@ -61,12 +67,12 @@ After preparing the machine for the release follow the below steps
 * Clean up the previous release backup/release property files.
 
     ```
-    mvn release:clean
+    ./mvnw release:clean
     ```
 * Prepare the project for releasing.
 
     ```
-    mvn clean release:prepare
+    ./mvnw clean release:prepare
     ```
     * The above command will prompt for the following
         * current release version (should be same as in changelog)
@@ -80,7 +86,7 @@ After preparing the machine for the release follow the below steps
         * If at anytime the release need to be stopped. Cancel the maven commands using (ctrl + z) and run the below command 
         
         ```
-        mvn release:rollback
+        ./mvnw release:rollback
         ```
 
 * Travis starts a new build for released tag and pushes the artifact to [sonatype staging repo](https://oss.sonatype.org/#stagingpositories).
