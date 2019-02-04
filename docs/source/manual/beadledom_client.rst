@@ -38,28 +38,29 @@ Beadledom Client can be used with JAX-RS resource annotated interfaces for creat
     List<Repo> getRepos(@PathParam("org") String org);
   }
 
+These resources should be wrapped in a containing class, so the injected interfaces won't get picked up by jax-rs/Beadledom if being used within another service.
 The Beadledom Client Proxy can generate an implementation of the GithubResource interface.
 
 .. code-block:: java
+  public class GithubClient {
+    private final GithubResource githubResource;
 
-  BeadledomClient client = BeadledomResteasyClientBuilder.newBuilder().build();
-  BeadledomWebTarget target = client.target("https://api.github.com");
+    GithubClient(GithubResource client) {
+      BeadledomWebTarget target = client.target("https://api.github.com");
 
-  GithubResource github = target.proxy(GithubResource.class);
+      githubResource = target.proxy(GithubResource.class);
+    }
 
-BeadledomClientBuilder's buildTarget method can be used to create a BeadledomWebTarget object.
+    public GithubResource githubResource() {
+      return githubResource;
+    }
+  }
+
+The client can then be used to make a call to the service.
 
 .. code-block:: java
 
-  BeadledomWebTarget target = BeadledomClientBuilder.newBuilder().buildTarget("https://api.github.com");
-
-  GithubResource github = target.proxy(GithubResource.class);
-
-The resource can then be used to make a call to the service.
-
-.. code-block:: java
-
-  List<Repo> repos = github.getRepos("cerner");
+  List<Repo> repos = githubResource.getRepos("cerner");
 
 All of the same JAX-RS annotations that are used for service resources can be used for the client interface. The interface can even be re-used for both the client and service, with the service implementing the interface, but keeping the JAX-RS annotations on the interface. The annotations that can be used include, but are not limited to the following. Read the JAX-RS documentation for a full set of features.
 
@@ -69,6 +70,9 @@ All of the same JAX-RS annotations that are used for service resources can be us
 * ``@PathParam`` for path parameters
 * ``@QueryParam`` for query parameters
 * ``@HeaderParam`` for header parameters
+
+Using the Beadledom Client in conjunction with Guice is the preferred method of implementation. More information about the Guice implementation is here:
+* `Usage with Guice <subdocs/guice>`_
 
 Generic Response
 ----------------
@@ -158,8 +162,3 @@ Existing and custom JAX-RS `Features <https://jax-rs-spec.java.net/nonav/2.0/api
       .build();
 
 Authentication filters or serializers/deserializers like Jackson JSON can be registered and customized to meet the requirements of calling any service.
-
-Additional Usage Documentation
-------------------------------
-
-* `Usage with Guice <subdocs/guice>`_
