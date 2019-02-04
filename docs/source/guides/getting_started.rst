@@ -185,7 +185,6 @@ And that's pretty much all that is needed to define an end-point. To learn more 
 extend your path and about additional annotations that can be used in defining a resource we
 suggest taking a look at `RESTEasy's documentation <http://resteasy.jboss.org/docs.html>`_ to
 get started (RESTEasy is the current implementation of the JAX-RS standard that Beadledom is using).
->>>>>>> master
 
 HelloWorldDto
 +++++++++++++
@@ -227,7 +226,7 @@ HelloWorldDto
     }
   }
 
-This class defines the JSON response fromt he service. The few things to note here are the
+This class defines the JSON response from the service. The few things to note here are the
 Swagger annotations. :java:`@ApiModel(value = "HelloWordDto")` defines the high level API model,
 and as we are sure you have already guessed :java:`@ApiModelProperty` allows us to add some documentation
 around the various fields that are going to be a part of our response.
@@ -244,13 +243,13 @@ webapp/META-INF
 +++++++++++++++
 
 :Files:
-    - **web.xml** - deployment descriptor that loads our context listener class as our servlets entry point
+  - **web.xml** - deployment descriptor that loads our context listener class as our servlets entry point
 
 resources
 +++++++++
 
 :Files:
-    - **log4j.properties** - configuration for our logger
+  - **log4j.properties** - configuration for our logger
   - **stagemonitor.properties** - configuration for `stagemonitor <http://www.stagemonitor.org/>`_
   - **build-info.properties** - properties from the current build used in health checks
 

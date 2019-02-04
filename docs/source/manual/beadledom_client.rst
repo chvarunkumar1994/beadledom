@@ -71,7 +71,7 @@ All of the same JAX-RS annotations that are used for service resources can be us
 * ``@QueryParam`` for query parameters
 * ``@HeaderParam`` for header parameters
 
-Using the Beadledom Client in conjunction with Guice is the preferred method of implementation. More information about the Guice implementation is here:
+More information about using the Beadledom Client in conjunction with Guice can be found here:
 * `Usage with Guice <subdocs/guice>`_
 
 Generic Response

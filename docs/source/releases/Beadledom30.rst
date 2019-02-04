@@ -7,6 +7,7 @@ Released August 3rd, 2018
 
 New Features
 ------------
+
 - Support building with JDK 9/10+
 
 Migrating from Beadledom 2.0
@@ -29,7 +30,6 @@ beadledom-swagger.
 
 Guice Module Changes
 ~~~~~~~~~~~~~~~~~~~~
->>>>>>> master
 Beadledom 3.0 no longer installs StagemonitorModule, SwaggerModule, AvroJacksonGuiceModule,
 AvroSwaggerGuiceModule, and HealthModule modules with BeadledomModule. If the removed functionality is
 desired, install the removed modules in the consuming Guice module. ResteasyModule installs the
@@ -62,4 +62,3 @@ JAX-RS 2.1 Upgrade
 ~~~~~~~~~~~~~~~~~~
 Beadledom 3.0 now uses JAX-RS 2.1 and Resteasy 3.6.x. Change your dependencies on javax.ws.rs-api
 to 2.1 and Resteasy to 3.6.0.Final or the latest 3.6.x version.
->>>>>>> master
