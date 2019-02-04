@@ -45,7 +45,7 @@ The Beadledom Client Proxy can generate an implementation of the GithubResource 
   public class GithubClient {
     private final GithubResource githubResource;
 
-    GithubClient(GithubResource client) {
+    GithubClient(BeadledomClient client) {
       BeadledomWebTarget target = client.target("https://api.github.com");
 
       githubResource = target.proxy(GithubResource.class);
@@ -60,7 +60,9 @@ The client can then be used to make a call to the service.
 
 .. code-block:: java
 
-  List<Repo> repos = githubResource.getRepos("cerner");
+  BeadledomClient client = BeadledomResteasyClientBuilder.newBuilder().build();
+  GithubClient githubClient = GithubClient(client);
+  List<Repo> repos = githubClient.githubResource.getRepos("cerner");
 
 All of the same JAX-RS annotations that are used for service resources can be used for the client interface. The interface can even be re-used for both the client and service, with the service implementing the interface, but keeping the JAX-RS annotations on the interface. The annotations that can be used include, but are not limited to the following. Read the JAX-RS documentation for a full set of features.
 
