@@ -345,9 +345,9 @@ AwesomeThingModule
   }
 
 ``AwesomeThingModule`` is a private module, which contains configuration information for our service.
-PrivateModule encapsulates the service's environment and only exposes objects needed for
+The PrivateModule encapsulates the service's environment and only exposes objects needed for
 JAX-RS/Resteasy(ex: resource classes, providers and features). It also prevents dependency issues
-with a configuration bound to Guice globally.
+with any configuration bound to Guice globally.
 
 As noted by the comment in the generated code, all bindings necessary to setup your JAX-RS resource
 class should be bound here, but only expose the JAX-RS resources and filters that you want to run
@@ -422,7 +422,7 @@ allows automatically generating a client implementation via a Java proxy object.
 .. code-block:: java
 
   /**
-   * JAX-RS annotation defining the base URI path for the resource.
+   * JAX-RS annotation defining the path for the resource.
    */
   @Path("/hello")
   public interface HelloWorldResource {
@@ -442,6 +442,9 @@ allows automatically generating a client implementation via a Java proxy object.
      * by Beadledom. It allows consumers (mostly of the client) to get a type safe response
      * from the server instead of having to do the casting or deserialization of the Json
      * payload themselves.
+     *
+     * For responses that will not include a body in the response (ie. DELETE) it's best to
+     * continue using the regular JAX-RS Response class.
      */
     public GenericResponse<HelloWorldDto> getHelloWorld();
   }
