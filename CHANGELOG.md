@@ -11,6 +11,8 @@
   - CVE-2018-14719
   - CVE-2018-14718
   - CVE-2018-14721
+* Added archetype for project generation.
+* Updated client documentation to recommend using an abstracted resource pattern.
 
 ## 3.2.3 - 4 December 2018
 
